@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonny - Your Personal AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0 40px;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+            border-radius: 2px;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            font-weight: bold;
+            box-shadow: 0 10px 40px rgba(123, 47, 247, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 4em;
+            font-weight: 700;
+            background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        .tagline {
+            font-size: 1.3em;
+            color: #a0a0c0;
+            margin-top: 15px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .video-section {
+            margin: 60px 0;
+            text-align: center;
+        }
+
+        .video-section h2 {
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #e0e0ff;
+            font-weight: 400;
+        }
+
+        .video-wrapper {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            background: #000;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            display: block;
+            cursor: pointer;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .play-button::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 15px 0 15px 26px;
+            border-color: transparent transparent transparent #7b2ff7;
+            margin-left: 5px;
+        }
+
+        .video-overlay:hover .play-button {
+            transform: scale(1.15);
+            background: #ffffff;
+        }
+
+        .download-section {
+            text-align: center;
+            margin: 50px 0;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .download-section h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #e0e0ff;
+            font-weight: 400;
+        }
+
+        .download-section p {
+            color: #a0a0c0;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 45px;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 30px rgba(123, 47, 247, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(123, 47, 247, 0.5);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-btn .icon {
+            font-size: 1.4em;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 80px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 35px 25px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(123, 47, 247, 0.2);
+            border-color: rgba(123, 47, 247, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #e0e0ff;
+        }
+
+        .feature-card p {
+            color: #a0a0c0;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+
+        .about {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            margin: 60px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .about h2 {
+            font-size: 2em;
+            margin-bottom: 25px;
+            color: #e0e0ff;
+        }
+
+        .about p {
+            color: #c0c0d0;
+            line-height: 1.8;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .about ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .about ul li {
+            padding: 12px 0 12px 30px;
+            color: #c0c0d0;
+            font-size: 1.05em;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .about ul li::before {
+            content: '✦';
+            position: absolute;
+            left: 0;
+            color: #7b2ff7;
+        }
+
+        .about ul li:last-child {
+            border-bottom: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+        }
+
+        footer p {
+            color: #606080;
+            font-size: 0.9em;
+        }
+
+        footer a {
+            color: #7b2ff7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #00d4ff;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .container {
+                padding: 20px 15px;
+            }
+
+            .about {
+                padding: 30px 20px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .video-section h2 {
+                font-size: 1.5em;
+            }
+
+            .download-section {
+                padding: 30px 20px;
+            }
+
+            .download-btn {
+                padding: 15px 30px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">S</div>
+            <h1>Sonny</h1>
+            <p class="tagline">Your Intelligent Personal Assistant</p>
+        </header>
+
+        <section class="video-section">
+            <h2>Meet Sonny — Watch the Introduction</h2>
+            <div class="video-wrapper">
+                <video id="marketingVideo" poster="images/logo.png" controls preload="metadata">
+                    <source src="Sonny.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="video-overlay hidden" id="videoOverlay">
+                    <div class="play-button"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="download-section">
+            <h2>Download Sonny</h2>
+            <p>Get the latest version of Sonny for your Windows machine. Fully offline, privacy-first, and ready to use.</p>
+            <a href="https://github.com/ahmed19maher9/Sonny/releases" target="_blank" class="download-btn">
+                <span class="icon">⬇️</span>
+                Download Latest Version
+            </a>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🎙️</div>
+                <h3>Voice Commands</h3>
+                <p>Natural speech recognition and voice interaction. Just speak naturally and Sonny responds instantly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>AI-Powered</h3>
+                <p>Powered by advanced local LLMs for intelligent conversations, task automation, and contextual understanding.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>Web & Search</h3>
+                <p>Browse the web, search Google, fetch content, and interact with YouTube — all hands-free.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💻</div>
+                <h3>System Control</h3>
+                <p>Control your computer, manage files, run commands, and automate tasks with simple voice instructions.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Smart Tools</h3>
+                <p>Calculator, clipboard manager, timer, file explorer, and more built-in tools at your command.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🖼️</div>
+                <h3>3D Avatar</h3>
+                <p>Interactive 3D avatar with realistic animations that responds and reacts to your voice commands.</p>
+            </div>
+        </section>
+
+        <section class="about">
+            <h2>About Sonny</h2>
+            <p>
+                Sonny is a powerful, privacy-focused personal AI assistant that runs entirely on your local machine.
+                Built with C++ and powered by state-of-the-art language models, Sonny understands your voice,
+                performs complex tasks, and helps you get things done — without sending your data to the cloud.
+            </p>
+            <ul>
+                <li><strong>Fully Offline</strong> — All processing happens locally on your device. No cloud dependency, no data leaks.</li>
+                <li><strong>Wake Word Detection</strong> — "Hey Sonny" activates the assistant, ready for your commands.</li>
+                <li><strong>Multi-Tool Integration</strong> — From web search to file management, Sonny has a rich tool ecosystem.</li>
+                <li><strong>Customizable</strong> — Extend Sonny with your own tools, voices, and behaviors.</li>
+                <li><strong>Open Source</strong> — Check out the source code on GitHub and contribute to the project.</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>
+                &copy; 2026 Sonny Personal Assistant |
+                <a href="https://github.com/ahmed19maher9/Sonny" target="_blank">GitHub Repository</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        const video = document.getElementById('marketingVideo');
+        const overlay = document.getElementById('videoOverlay');
+
+        // Click on video or overlay plays it
+        function playVideo() {
+            video.play();
+            overlay.classList.add('hidden');
+        }
+
+        video.addEventListener('click', playVideo);
+        overlay.addEventListener('click', playVideo);
+
+        video.addEventListener('pause', function() {
+            // Only show overlay if video hasn't ended (has remaining time)
+            if (!video.ended) {
+                overlay.classList.remove('hidden');
+            }
+        });
+
+        video.addEventListener('ended', function() {
+            overlay.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
